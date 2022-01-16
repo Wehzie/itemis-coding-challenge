@@ -1,0 +1,48 @@
+import sys
+import math
+
+def get_dev_input() -> list:
+    """Build a maze for development purposes."""
+    form1 = (
+"""................
+................
+..+----------+..
+..|          |..
+..|   o      |..
+..|      o   |..
+..|          |..
+..+----------+..
+................
+............o...
+.....o..........
+................
+.........o......
+................
+................
+................""")
+
+    form2 = form1.splitlines()
+    grid = []
+    for line in form2:
+        grid.append(list(line))
+    return grid
+
+# read input
+def get_input() -> list:
+    """Build maze as list of lists."""
+    grid = []
+    for i in range(16):
+        line = input()
+        grid.append(list(line))
+    return grid
+
+def count_moles(grid: list) -> int:
+    """Count number of moles in the grid"""
+
+def main():
+    grid = get_dev_input()
+    
+    # accessing the grid works in the form
+    #grid[row_i][col_j]
+
+main()
