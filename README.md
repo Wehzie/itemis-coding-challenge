@@ -9,6 +9,17 @@
 
 Input
 
+-+
+0|
+-+
+
+0|
+-+
+
++-+
+|o|
++-+
+
 ```
 ................
 ................
@@ -40,3 +51,16 @@ Output
 
 - we cannot assume that the garden has a rectangle shape
 - a mole in the garden cannot have "." as a neighbor
+- its not possible to distinguish the following cases using only 8 neighbors
+
+        # outside
+        +-+
+        oo|
+        +-+
+
+        # inside
+        +--+
+        |oo|
+        +--+
+
+- need to use bracket matching: open fence | count moles, close fence |

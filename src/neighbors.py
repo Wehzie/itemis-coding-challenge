@@ -4,18 +4,18 @@ import math
 GRID_MIN = 0
 GRID_MAX = 16
 
-def get_dev_input() -> list:
+def get_dev_input2() -> list:
     """Build a maze for development purposes."""
     form1 = (
 """................
 ................
-..+----------+..
-..|          |..
-..|   o      |..
-..|      o   |..
-..|          |..
-..+----------+..
-................
++------------+..
+|            |..
++-+   o      |..
+oo|      o   |..
++-+  +-------+..
+|    |..........
++----+..........
 ............o...
 .....o..........
 ................
@@ -62,6 +62,22 @@ def is_mole(c: str) -> bool:
     """Evaluate whether this character a mole."""
     return c == "o"
 
+def is_in_garden(neighbors) -> bool:
+    """Evaluate whether mole is in the garden."""
+    cond1 = "." not in neighbors
+    return cond1
+
+def is_not_in_garden(neighbors) -> bool:
+    """Evaluate whether mole is not in garden."""
+    cond11 = set(neighbors) == {"-", "+", "|"}
+    cond12 = len(neighbors) == 5 or len(neighbors) == 3
+    cond21 = set(neighbors) == {"-", "+", "|", "o"}
+    cond22 = len(neighbors) == 8
+    print("1", cond21)
+    print("2", cond22)
+
+    return ((cond11 and cond12) or (cond21 and cond22))
+
 def count_moles(grid: list) -> int:
     """Count number of moles in the grid"""
     mole_counter = 0
@@ -69,17 +85,17 @@ def count_moles(grid: list) -> int:
         for j in range(len(grid[i])): # col
             if is_mole(grid[i][j]):
                 neighbors = get_neighbors(grid, i, j)
-                if "." not in neighbors:
+                if is_in_garden(neighbors) and not is_not_in_garden(neighbors):
                     mole_counter += 1
     
     return mole_counter
 
 
 def main():
-    grid = get_dev_input()
+    grid = get_dev_input2()
     print(count_moles(grid))
     
     # accessing the grid works in the form
-    #grid[row_i][col_j]
+    # grid[row_i][col_j]
 
 main()
