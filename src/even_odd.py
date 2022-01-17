@@ -11,11 +11,11 @@ def get_dev_input2() -> list:
 """................
 ................
 +------------+..
-|o       o  o|..
-+-+   oo     |..
+|            |..
++-+   o      |..
 oo|      o   |..
-+-+ o+-------+..
-|o   |..........
++-+  +-------+..
+|    |..........
 +----+..........
 ............o...
 .....o..........
@@ -23,7 +23,7 @@ oo|      o   |..
 .........o......
 ................
 ................
-o...............""")
+................""")
 
     form2 = form1.splitlines()
     grid = []
@@ -43,6 +43,8 @@ def get_input() -> list:
 def get_cross(grid: list, i_center, j_center) -> list:
     """Return lists of vertical and horizontal outgoing patches."""
     vertical = [li[j_center] for li in grid]
+    #horizontal = copy.deepcopy(grid[i_center])
+    #del horizontal[j_center]
     horizontal = grid[i_center]
     grid[i_center]
     
@@ -54,49 +56,33 @@ def is_mole(c: str) -> bool:
 
 def is_in_garden(i_center, j_center, horizontal, vertical) -> bool:
     """Evaluate whether mole is in the garden."""
-    # denote current mole
-    vertical[i_center] = "x"
-    horizontal[j_center] = "x"
-
-    #print("i_cent", i_center, "j_cent", j_center)
-    #print("vert")
-    #print(vertical)
-    #print("hori")
-    #print(horizontal)
-
-    i = int(i_center
-        - vertical[0:i_center+1].count(".") 
-        - vertical[0:i_center+1].count(" ")
-        - vertical[0:i_center+1].count("o"))
-    j = int(j_center
-        - horizontal[0:j_center+1].count(".")
-        - horizontal[0:j_center+1].count(" ")
-        - horizontal[0:j_center+1].count("o"))
-    #print("i", i, "j", j)
-
     # remove other space "." and white space " "
-    hori = [x for x in horizontal if x not in [".", " ", "o"]]
-    vert = [x for x in vertical if x not in [".", " ", "o"]]
-    #print("vert_clean")
-    #print(vert)
-    #print("hori_clean")
-    #print(hori)
-
-    #print("#########")
-    #print("")
+    #hori = [x for x in horizontal if x not in [".", " "]]
+    #vert = [x for x in vertical if x not in [".", " "]]
     
-    hori_ok, vert_ok = False, False
-    if j-1 >= 0 and j+1 < len(hori) and i-1 >= 0 and i+1 < len(vert):
-        hori_ok = hori[j-1] in ["|", "+"] and hori[j+1] in ["|", "+"]
-        vert_ok = vert[i-1] in ["-", "+"] and vert[i+1] in ["-", "+"]
+    # count of e must be odd on both sides
+    count_hori_right = 0
+    for x in horizontal[j_center+1:-1]:
+        if x in ["|", "+"]:
+            count_hori_right += 1
+    count_hori_left = 0
+    for x in horizontal[0:j_center]:
+        if x in ["|", "+"]:
+            count_hori_left += 1   
 
-    # convert "x" back to "o" (was pass by reference)
-    for x in range(len(vertical)):
-        if vertical[x] == "x":
-            vertical[x] = "o"
-    for x in range(len(horizontal)):
-        if horizontal[x] == "x":
-            horizontal[x] = "o"
+    count_vert_bot = 0
+    for x in vertical[i_center+1:-1]:
+        if x in ["-", "+"]:
+            count_vert_bot += 1
+    count_vert_top = 0
+    for x in vertical[0:i_center]:
+        if x in ["-", "+"]:
+            count_vert_top += 1        
+
+    hori_ok = count_hori_right % 2 == 1 and count_hori_left % 2 == 1
+    vert_ok = count_vert_top % 2 == 1 and count_vert_bot % 2 == 1
+    print(i_center, j_center, "hori", hori_ok, "vert", vert_ok)
+    print(count_hori_left, count_hori_right)
 
     return True if hori_ok and vert_ok else False
 
@@ -108,7 +94,7 @@ def count_moles(grid: list) -> int:
             if is_mole(grid[i][j]):
                 horizontal, vertical = get_cross(grid, i, j)
                 if is_in_garden(i, j, horizontal, vertical):
-                    #print(i, j, "is in garden.")
+                    print(i, j, "is in garden.")
                     mole_counter += 1
 
     return mole_counter

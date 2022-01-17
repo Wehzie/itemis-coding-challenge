@@ -63,4 +63,8 @@ Output
         |oo|
         +--+
 
+- even_odd expects that the number of fence-symbols is uneven on both axes. This doesn't work because of the following case. The mole should be inside the garden.
+
+    +--+ o |
+
 - need to use bracket matching: open fence | count moles, close fence |
