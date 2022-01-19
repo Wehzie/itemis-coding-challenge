@@ -67,4 +67,4 @@ Output
 
     +--+ o |
 
-- need to use bracket matching: open fence | count moles, close fence |
+- need to use bracket matching: open fence | count moles, close fence |. Update: matching alone isn't enough because of nested gardens. Counting the number of fence symbols on an axis doesn't solve this because an o may lie on one axis with a fence piece.
