@@ -2,7 +2,7 @@ import sys
 import math
 import copy
 
-DEBUG = False
+DEBUG = True
 GRID_MIN = 0
 GRID_MAX = 16
 
@@ -59,6 +59,31 @@ def get_dev_input3() -> list:
         grid.append(list(line))
     return grid
 
+def get_dev_input4() -> list:
+    """Build a maze for development purposes."""
+    form1 = (
+"""oooooo+--+oooooo
+o+--+o|oo|o+--+o
+o|oo+-+oo+-+oo|o
+o++oooooooooo++o
+oo+-+o+--+o+-+oo
+oooo|o|oo|o|oooo
+o+--+o+--+o+--+o
+++oooooooooooo++
+|oooooooooooooo|
++--------------+
+oooooooooooooooo
+o+-+oo+--+xx+-+o
+++o|oo|oo|oo|o++
+|oo+--+oo+--+oo|
+|oooooooooooooo|
++--------------+""")
+
+    form2 = form1.splitlines()
+    grid = []
+    for line in form2:
+        grid.append(list(line))
+    return grid
 
 # read input
 def get_input() -> list:
@@ -140,28 +165,24 @@ def is_in_garden(i_center, j_center, horizontal, vertical) -> bool:
         print("hori_clean")
         print(hori)
 
-
-    
-    hori_ok, vert_ok = False, False
     # perform bound checks
-    
     if j >= 0 and j < len(hori) and i >= 0 and i < len(vert):
         hori_left = len(hori[0:j])
         hori_right = len(hori[j:-1])
-        hori_ok = min(hori_left, hori_right) % 2 == 1
         
         vert_top = len(vert[0:i])
         vert_bot = len(vert[i:-1])
-        vert_ok = min(vert_top, vert_bot) % 2 == 1
         
         if DEBUG:
             print("hori_left", hori_left, "hori_right", hori_right)
             print("vert_top", vert_top, "vert_bot", vert_bot)
+    else:
+        if DEBUG:
+            print("decision", False)
+            print("".join(["#" for _ in range(20)]))
+            print("")
+        return False
         
-    if DEBUG:
-        print("#########")
-        print("")
-
     # convert "x" back to "o" (was pass by reference)
     for x in range(len(vertical)):
         if vertical[x] == "x":
@@ -170,30 +191,41 @@ def is_in_garden(i_center, j_center, horizontal, vertical) -> bool:
         if horizontal[x] == "x":
             horizontal[x] = "o"
 
-    return True if hori_ok and vert_ok else False
+    eval = min(hori_left, hori_right, vert_bot, vert_top) % 2 == 1
+    decision = True if eval else False
+    if DEBUG:
+        print("decision", decision)
+        print("".join(["#" for _ in range(20)]))
+        print("")
+    return decision
 
 def count_moles(grid: list) -> int:
     """Count number of moles in the grid"""
+    debug_grid = copy.deepcopy(grid)
     mole_counter = 0
     for i in range(len(grid)): # row
         for j in range(len(grid[i])): # col
             if is_mole(grid[i][j]):
                 horizontal, vertical = get_cross(grid, i, j)
+                debug_grid[i][j] = "n"
                 if is_in_garden(i, j, horizontal, vertical):
                     #print(i, j, "is in garden.")
                     mole_counter += 1
+                    debug_grid[i][j] = "y"
 
-    return mole_counter
+    return mole_counter, debug_grid
 
+def print_debug_grid(grid: list):
+    for row in grid:
+        print(''.join(row))
+    print("\n")
 
 def main():
-    #grid = get_dev_input2()
-    #print(count_moles(grid))
+    grid = get_dev_input4()
+    count, debug_grid = count_moles(grid)
+    if DEBUG:
+        print_debug_grid(debug_grid)
 
-    grid = get_dev_input3()
-    print(count_moles(grid))
-    
-    # accessing the grid works in the form
-    #grid[row_i][col_j]
+    print(count)
 
 main()
